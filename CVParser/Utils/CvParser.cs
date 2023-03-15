@@ -10,7 +10,7 @@ namespace CVParser.Utils
 {
     public class CvParser
     {
-        public string FilePath { get; set; }
+        public string filePath { get; set; }
         public string Content_PlainText { get; set; }
 
         private List<string> lines;
@@ -39,28 +39,28 @@ namespace CVParser.Utils
 
         private TextParser textParser;
 
-        public CvParser(string fileName)
+        public CvParser()
         {
-            FilePath = fileName;
             textParser = new TextParser();
         }
 
-        public bool Load()
+        public bool Load(string fileName)
         {
+            filePath = fileName;
             // TODO el lehet szórakozni a path-al
 
-            if (string.IsNullOrEmpty(FilePath))
+            if (string.IsNullOrEmpty(filePath))
                 return false;
 
-            if (!File.Exists(FilePath))
+            if (!File.Exists(filePath))
                 return false;
 
-            using (StreamReader fs = new StreamReader(FilePath, Encoding.UTF8)) // TODO custom GetEncoding(?)))
+            using (StreamReader fs = new StreamReader(filePath, Encoding.UTF8)) // TODO custom GetEncoding(?)))
             {
                 //if (lines == null)
                 //    lines = new List<string>;
 
-                lines = File.ReadAllLines(FilePath).ToList();
+                lines = File.ReadAllLines(filePath).ToList();
             }
 
             return true;
