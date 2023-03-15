@@ -19,14 +19,20 @@ namespace CVParser.Controllers
                 {
                     Cv cv = new Cv();
 
-                    if (cvParser.Emails != null)
+                    if (cvParser.Emails.Any())
                     { 
                         foreach (var item in cvParser.Emails)
-                        {
                             Console.WriteLine($"email: {item}");
-                        }
 
                         cv.Email = cvParser.Emails.First();
+                    }
+
+                    if (cvParser.Phones.Any())
+                    {
+                        foreach (var item in cvParser.Phones)
+                            Console.WriteLine($"phone: {item}");
+
+                        cv.Phone = cvParser.Phones.First();
                     }
 
                     var settings = new JsonSerializerSettings

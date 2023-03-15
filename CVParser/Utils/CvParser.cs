@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CVParser.Extensions;
 
 namespace CVParser.Utils
 {
@@ -22,6 +23,17 @@ namespace CVParser.Utils
                 if (emails == null)
                     emails = new List<string>();
                 return emails;
+            }
+        }
+
+        private List<string> phones;
+        public List<string> Phones
+        {
+            get
+            {
+                if (phones == null)
+                    phones = new List<string>();
+                return phones;
             }
         }
 
@@ -56,23 +68,55 @@ namespace CVParser.Utils
 
         public bool Parse()
         {
-            if (!GetEmails())
+            if (!DoParse())
                 return false;
 
             return true;
         }
 
-        private bool GetEmails()
+        private bool DoParse()
         {
             List<string> words = new List<string>();
+            string item;
+
+            bool parseLine = false;
             foreach (string line in lines)
             {
+                if (line.IsNullOrEmpty()) continue;
+
                 words = line.Split(' ').ToList();
                 foreach (var word in words)
                 {
-                    string item = textParser.GetEmail(word);
+                    if (word.IsNullOrEmpty()) continue;
+
+                    item = textParser.GetEmail(word);
                     if (!string.IsNullOrEmpty(item))
+                    {
                         Emails.Add(item);
+                        continue;
+                    }
+
+                    item = textParser.GetPhone(word);
+                    if (!string.IsNullOrEmpty(item))
+                    {
+                        Phones.Add(item);
+                        continue;
+                    }
+
+                    // szóköz miatt nézzük meg a teljes sort
+                    if (textParser.isPartOfPhone(word))
+                    {
+                        parseLine = true;
+                        break;
+                    }
+                }
+
+                if (parseLine)
+                {
+                    parseLine = false;
+                    item = textParser.GetPhone(line);
+                    if (!string.IsNullOrEmpty(item))
+                        Phones.Add(item);
                 }
             }
 
