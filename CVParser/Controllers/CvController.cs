@@ -99,6 +99,16 @@ namespace CVParser.Controllers
                 return Path.ChangeExtension(filePath, "txt");
             }
 
+            if (new[] { ".doc", ".docx" }.Contains(ext.ToLower()))
+            {
+                if (!DocUtils.Doc2Text(filePath))
+                    return String.Empty;
+
+                Console.WriteLine("Word document detected");
+
+                return Path.ChangeExtension(filePath, "txt");
+            }
+
             return String.Empty;
         }
     }

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CVParser.Extensions;
 
 namespace CVParser.Utils
 {
@@ -12,6 +13,12 @@ namespace CVParser.Utils
     {
         public static bool Pdf2Text(string fileName)
         {
+            if (fileName.IsNullOrEmpty())
+                return false;
+
+            if (!File.Exists(fileName))
+                return false;
+
             // https://www.xpdfreader.com/pdftotext-man.html
 
             if (!File.Exists("pdftotext.exe"))
