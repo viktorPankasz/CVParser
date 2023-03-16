@@ -57,6 +57,14 @@ namespace CVParser.Controllers
                 cv.Phone = cvParser.Phones.First();
             }
 
+            if (cvParser.Addresses.Any())
+            {
+                foreach (var item in cvParser.Addresses)
+                    Console.WriteLine($"address: {item}");
+
+                cv.Address = cvParser.Addresses.First();
+            }
+
             var settings = new JsonSerializerSettings
             {
                 NullValueHandling = NullValueHandling.Ignore,

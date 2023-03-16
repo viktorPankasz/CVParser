@@ -8,6 +8,8 @@ using CVParser.Extensions;
 
 namespace CVParser.Utils
 {
+    public enum ParseLineReason { None, Phone, Address }
+
     public class CvParser
     {
         public string filePath { get; set; }
@@ -37,6 +39,17 @@ namespace CVParser.Utils
             }
         }
 
+        private List<string> addresses;
+        public List<string> Addresses
+        {
+            get
+            {
+                if (addresses == null)
+                    addresses = new List<string>();
+                return addresses;
+            }
+        }
+
         private TextParser textParser;
 
         public CvParser()
@@ -56,12 +69,7 @@ namespace CVParser.Utils
                 return false;
 
             using (StreamReader fs = new StreamReader(filePath, Encoding.UTF8)) // TODO custom GetEncoding(?)))
-            {
-                //if (lines == null)
-                //    lines = new List<string>;
-
                 lines = File.ReadAllLines(filePath).ToList();
-            }
 
             return true;
         }
@@ -76,10 +84,10 @@ namespace CVParser.Utils
 
         private bool DoParse()
         {
-            List<string> words = new List<string>();
+            List<string> words;
             string item;
 
-            bool parseLine = false;
+            ParseLineReason parseLine = ParseLineReason.None;
             foreach (string line in lines)
             {
                 if (line.IsNullOrEmpty()) continue;
@@ -103,20 +111,40 @@ namespace CVParser.Utils
                         continue;
                     }
 
+                    // find zip
+                    if (textParser.GetZipCode(word) > 0)
+                    {
+                        parseLine = ParseLineReason.Address;
+                        break;
+                    }
+
                     // szóköz miatt nézzük meg a teljes sort
                     if (textParser.isPartOfPhone(word))
                     {
-                        parseLine = true;
+                        parseLine = ParseLineReason.Phone;
                         break;
                     }
                 }
 
-                if (parseLine)
+                switch (parseLine)
                 {
-                    parseLine = false;
-                    item = textParser.GetPhone(line);
-                    if (!string.IsNullOrEmpty(item))
-                        Phones.Add(item);
+                    case ParseLineReason.None:
+                        break;
+                    case ParseLineReason.Phone:
+                        parseLine = ParseLineReason.None;
+                        item = textParser.GetPhone(line);
+                        if (!string.IsNullOrEmpty(item))
+                            Phones.Add(item);
+                        break;
+                    case ParseLineReason.Address:
+                        parseLine = ParseLineReason.None;
+                        item = line; // TODO cheat
+                        if (!string.IsNullOrEmpty(item))
+                            Addresses.Add(item);
+
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
 

@@ -38,7 +38,10 @@ namespace CVParser.Utils
                     Document document = application.Documents.Open(docFilePath);
                     //object encoding = Microsoft.Office.Core.MsoEncoding.msoEncodingUTF8;
                     object noEncodingDialog = true;
-                    application.ActiveDocument.SaveAs(txtFileName, WdSaveFormat.wdFormatText, ref noEncodingDialog);
+                    application.ActiveDocument.SaveAs(txtFileName, WdSaveFormat.wdFormatText,
+                        ref missing, ref missing, ref missing, ref missing, ref missing,
+                        ref missing, ref missing, ref missing, ref missing, ref missing,
+                        ref missing, ref missing, ref missing, ref missing);
 
                     // close word doc and word app.
                     object saveChanges = WdSaveOptions.wdDoNotSaveChanges;
