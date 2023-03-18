@@ -80,7 +80,7 @@ namespace CVParser.Utils
                 return false;
 
             using (StreamReader fs = new StreamReader(filePath, Encoding.UTF8)) // TODO custom GetEncoding(?)))
-                lines = File.ReadAllLines(filePath).ToList();
+                lines = File.ReadAllLines(filePath, Encoding.UTF8).ToList();
 
             return true;
         }
@@ -98,7 +98,6 @@ namespace CVParser.Utils
             List<string> words;
             string item;
 
-            ParseLineReason parseLine = ParseLineReason.None;
             foreach (string line in lines)
             {
                 if (line.IsNullOrEmpty()) continue;
@@ -135,27 +134,6 @@ namespace CVParser.Utils
                     if (textParser.isPartOfPhone(word))
                         if (ParseLine(line, ParseLineReason.Phone))
                             break;
-                }
-
-                switch (parseLine)
-                {
-                    case ParseLineReason.None:
-                        break;
-                    case ParseLineReason.Phone:
-                        parseLine = ParseLineReason.None;
-                        item = textParser.GetPhone(line);
-                        if (!string.IsNullOrEmpty(item))
-                            Phones.Add(item);
-                        break;
-                    case ParseLineReason.Address:
-                        parseLine = ParseLineReason.None;
-                        item = line; // TODO cheat
-                        if (!string.IsNullOrEmpty(item))
-                            Addresses.Add(item);
-
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
                 }
             }
 

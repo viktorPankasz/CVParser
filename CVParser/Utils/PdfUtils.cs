@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using CVParser.Extensions;
 
@@ -37,6 +38,8 @@ namespace CVParser.Utils
                 startInfo.Arguments = $"-layout \"{fileName}\"";
                 process.StartInfo = startInfo;
                 process.Start();
+
+                Thread.Sleep(1000);
 
                 return true;
             }
