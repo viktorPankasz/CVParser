@@ -9,7 +9,7 @@ namespace CVParser.Models
 {
     public class Cv
     {
-        public string Name { get; set; }
+        public string Person { get; set; }
         //[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string BirthDateStr { get; set; }
         public string Phone { get; set; }

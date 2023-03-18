@@ -8,7 +8,7 @@ using CVParser.Extensions;
 
 namespace CVParser.Utils
 {
-    public enum ParseLineReason { None, Phone, Address }
+    public enum ParseLineReason { None, Phone, Address, Person }
 
     public class CvParser
     {
@@ -16,6 +16,17 @@ namespace CVParser.Utils
         public string Content_PlainText { get; set; }
 
         private List<string> lines;
+
+        private List<string> persons;
+        public List<string> Persons
+        {
+            get
+            {
+                if (persons == null)
+                    persons = new List<string>();
+                return persons;
+            }
+        }
 
         private List<string> emails;
         public List<string> Emails
@@ -97,6 +108,10 @@ namespace CVParser.Utils
                 {
                     if (word.IsNullOrEmpty()) continue;
 
+                    if (textParser.IsPerson(word))
+                        if (ParseLine(line, ParseLineReason.Person))
+                            break;
+
                     item = textParser.GetEmail(word);
                     if (!string.IsNullOrEmpty(item))
                     {
@@ -112,18 +127,14 @@ namespace CVParser.Utils
                     }
 
                     // find zip
-                    if (textParser.GetZipCode(word) > 0)
-                    {
-                        parseLine = ParseLineReason.Address;
-                        break;
-                    }
+                    if (textParser.IsZipCode(word))
+                        if (ParseLine(line, ParseLineReason.Address))
+                            break;
 
-                    // szóköz miatt nézzük meg a teljes sort
+                    // Phone, split szóköz miatt nézzük meg a teljes sort
                     if (textParser.isPartOfPhone(word))
-                    {
-                        parseLine = ParseLineReason.Phone;
-                        break;
-                    }
+                        if (ParseLine(line, ParseLineReason.Phone))
+                            break;
                 }
 
                 switch (parseLine)
@@ -151,5 +162,46 @@ namespace CVParser.Utils
             return true;
         }
 
+        private bool ParseLine(string line, ParseLineReason parseLine)
+        {
+            string item;
+
+            switch (parseLine)
+            {
+                case ParseLineReason.None:
+                    break;
+                case ParseLineReason.Phone:
+                    item = textParser.GetPhone(line);
+                    if (!string.IsNullOrEmpty(item))
+                    {
+                        Phones.Add(item);
+                        return true;
+                    }
+                    break;
+                case ParseLineReason.Address:
+                    // TODO bejárni a sort
+                    item = line; // TODO cheat
+                    if (!string.IsNullOrEmpty(item))
+                    {
+                        Addresses.Add(item);
+                        return true;
+                    }
+                    break;
+                case ParseLineReason.Person:
+                    // TODO bejárni a sort
+                    // nagy kezdő betűket keresni, ami több mint 1 karakter
+                    item = line; // TODO cheat
+                    if (!string.IsNullOrEmpty(item))
+                    {
+                        Persons.Add(item);
+                        return true;
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return false;
+        }
     }
 }

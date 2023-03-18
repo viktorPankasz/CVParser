@@ -41,6 +41,14 @@ namespace CVParser.Controllers
 
             Cv cv = new Cv();
 
+            if (cvParser.Persons.Any())
+            {
+                foreach (var item in cvParser.Persons)
+                    Console.WriteLine($"person: {item}");
+
+                cv.Person = cvParser.Persons.First();
+            }
+
             if (cvParser.Emails.Any())
             { 
                 foreach (var item in cvParser.Emails)
@@ -68,10 +76,10 @@ namespace CVParser.Controllers
             var settings = new JsonSerializerSettings
             {
                 NullValueHandling = NullValueHandling.Ignore,
-                StringEscapeHandling = StringEscapeHandling.EscapeNonAscii, // ez rendezi az unicode és escape-lt dolgokat (pl: "name":"Egy\u00e9b:")
+                StringEscapeHandling = StringEscapeHandling.EscapeNonAscii, // rendezi az unicode és escape-lt dolgokat (pl: "T\u00f6r\u00f6kb\u00e1lint")
                 PreserveReferencesHandling = PreserveReferencesHandling.None,
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                MissingMemberHandling = MissingMemberHandling.Ignore, // üres array-ek esetén null, vagy skip, ne essen el // pl.: "characteristics":[]
+                MissingMemberHandling = MissingMemberHandling.Ignore, // üres array-ek esetén null, vagy skip, ne essen el
                 Formatting = Formatting.Indented
             };
 

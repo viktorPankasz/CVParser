@@ -52,8 +52,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\CvController.cs" />
-    <Compile Include="Data\hu\Data.cs" />
-    <Compile Include="Data\ZipItem.cs" />
+    <Compile Include="Resources\hu\Data.cs" />
+    <Compile Include="Resources\ZipItem.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Models\Cv.cs" />
     <Compile Include="Program.cs" />

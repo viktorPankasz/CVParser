@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CVParser.Data.hu
+namespace CVParser.Resources.hu
 {
     public static class Data
     {

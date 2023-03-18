@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CVParser.Data
+namespace CVParser.Resources
 {
     public class ZipItem
     {
